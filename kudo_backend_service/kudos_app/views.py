@@ -10,7 +10,7 @@ from .serializers import KudoSerializer
 def get_current_user(request):
     # For demo: get user from request (e.g., header or session)
     # Replace with real authentication in production
-    user_id = request.headers.get('user-id')
+    user_id = request.query_params.get('user_id')
     return User.objects.get(id=user_id)
 
 class GiveKudoView(APIView):
