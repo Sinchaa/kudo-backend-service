@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Item
+from .models import Kudo
 
-class ItemSerializer(serializers.ModelSerializer):
+class KudoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
+        model = Kudo
         fields = '__all__'

@@ -17,7 +17,6 @@ class LoginView(APIView):
                 # For demo: return user id and organization
                 return Response({
                     'user_id': user.id,
-                    'username': user.username
                 })
             else:
                 return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)

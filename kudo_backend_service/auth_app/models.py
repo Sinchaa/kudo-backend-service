@@ -12,4 +12,4 @@ class User(models.Model):
     date_joined = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.username
+        return f'User info for {self.username}, ID: {self.id}, Organization ID: {self.organization.id}, Name: {self.first_name} {self.last_name}, Email: {self.email}, Password:{self.password}'
