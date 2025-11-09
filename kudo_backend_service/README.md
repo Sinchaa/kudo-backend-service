@@ -38,9 +38,9 @@ This backend service manages user recognition by tracking and controlling weekly
    user3 = User.objects.create(username="carol", password="pass", organization=org2)
 
    # Create kudos
-   Kudo.objects.create(sender=user1, receiver=user2, message="Great teamwork!")
-   Kudo.objects.create(sender=user2, receiver=user1, message="Thanks for your help!")
-   Kudo.objects.create(sender=user3, receiver=user1, message="Well done on the project!")
+   Kudo.objects.create(kudos_from=user1, kudos_to=user2, message="Great teamwork!")
+   Kudo.objects.create(kudos_from=user2, kudos_to=user1, message="Thanks for your help!")
+   Kudo.objects.create(kudos_from=user3, kudos_to=user1, message="Well done on the project!")
    ```
    Exit the shell.
 
@@ -57,22 +57,22 @@ All endpoints are prefixed with `/kudos/`.
 
 ### 1. Give Kudos
 - **Endpoint:** `POST /kudos/give-kudos/`
-- **Headers:** `user-id: <sender_user_id>`
+- **Query Params:** `user-id: <kudos_from_user_id>`
 - **Body:**
   ```json
   {
-    "receiver_id": <receiver_user_id>,
+    "kudos_to_id": <kudos_to_user_id>,
     "message": "Your message here"
   }
   ```
 
 ### 2. List Received Kudos
 - **Endpoint:** `GET /kudos/received-kudos/`
-- **Headers:** `user-id: <user_id>`
+- **Query Params:** `user-id: <user_id>`
 
 ### 3. List Given Kudos
 - **Endpoint:** `GET /kudos/given-kudos/`
-- **Headers:** `user-id: <user_id>`
+- **Query Params:** `user-id: <user_id>`
 
 ---
 

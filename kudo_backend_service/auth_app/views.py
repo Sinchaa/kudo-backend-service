@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
+from kudos_app.serializers import UserSerializer
 
 class LoginView(APIView):
     permission_classes = []
@@ -15,9 +16,8 @@ class LoginView(APIView):
             user = User.objects.get(username=username)
             if user.password == password:
                 # For demo: return user id and organization
-                return Response({
-                    'user_id': user.id,
-                })
+                serializer = UserSerializer(user, many=False)
+                return Response(serializer.data)
             else:
                 return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:

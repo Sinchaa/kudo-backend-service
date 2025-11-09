@@ -30,13 +30,13 @@ def create_demo_data():
         "You went above and beyond!",
     ]
     for _ in range(20):
-        sender, receiver = random.sample(users, 2)
+        kudos_from, kudos_to = random.sample(users, 2)
         message = random.choice(messages)
         days_ago = random.randint(0, 14)
         created_at = timezone.now() - timezone.timedelta(days=days_ago)
         Kudo.objects.create(
-            sender=sender,
-            receiver=receiver,
+            kudos_from=kudos_from,
+            kudos_to=kudos_to,
             message=message,
             created_at=created_at
         )
