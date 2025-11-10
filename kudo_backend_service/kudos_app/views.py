@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -63,10 +64,13 @@ class AvailableKudosView(APIView):
     def get(self, request):
         user = get_current_user(request)
         now = timezone.now()
-        start_of_week = now - timedelta(days=now.weekday())
+        start_of_week_date  = now - timedelta(days=now.weekday())
+        start_of_week = timezone.make_aware(datetime.combine(start_of_week_date, datetime.min.time()))
+        print(now,start_of_week)
         kudos_given = Kudo.objects.filter(kudos_from=user, created_at__gte=start_of_week).count()
         kudos_left = max(0, 3 - kudos_given)
         return Response({'kudos_left': kudos_left})
+        
     
 class FetchUsersListView(APIView):
     permission_classes = []
