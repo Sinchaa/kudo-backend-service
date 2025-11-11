@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
     organization = serializers.SerializerMethodField()
     class Meta:
         model= User
-        fields = ['id', 'username', 'organization']
+        fields = ['id', 'username', 'organization', 'first_name','last_name']
     
     def get_organization(self, obj):
         # return organization name (or id) — change as needed
