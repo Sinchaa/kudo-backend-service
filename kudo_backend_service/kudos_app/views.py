@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -33,7 +32,16 @@ class GiveKudoView(APIView):
             return Response({'error': 'kudos_to not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         if kudos_to == user:
             return Response({'error': 'Cannot give kudo to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
-
+        already_given = Kudo.objects.filter(
+            kudos_from=user,
+            kudos_to=kudos_to,
+            created_at__gte=start_of_week
+        ).exists()
+        if already_given:
+            return Response(
+                {'error': 'You have already given a kudo to this user this week.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         kudo = Kudo.objects.create(kudos_from=user, kudos_to=kudos_to, message=message)
         serializer = KudoSerializer(kudo)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -64,13 +72,10 @@ class AvailableKudosView(APIView):
     def get(self, request):
         user = get_current_user(request)
         now = timezone.now()
-        start_of_week_date  = now - timedelta(days=now.weekday())
-        start_of_week = timezone.make_aware(datetime.combine(start_of_week_date, datetime.min.time()))
-        print(now,start_of_week)
+        start_of_week = now - timedelta(days=now.weekday())
         kudos_given = Kudo.objects.filter(kudos_from=user, created_at__gte=start_of_week).count()
         kudos_left = max(0, 3 - kudos_given)
         return Response({'kudos_left': kudos_left})
-        
     
 class FetchUsersListView(APIView):
     permission_classes = []
@@ -81,4 +86,3 @@ class FetchUsersListView(APIView):
         users_list = User.objects.filter(organization=user.organization).exclude(id=user.id)
         serializer = UserSerializer(users_list, many=True)
         return Response(serializer.data)
-

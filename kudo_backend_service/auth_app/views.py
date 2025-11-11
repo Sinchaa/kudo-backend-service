@@ -14,7 +14,7 @@ class LoginView(APIView):
             return Response({'error': 'Username and password required.'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(username=username)
-            if user.password == password:
+            if user.check_password(password):
                 # For demo: return user id and organization
                 serializer = UserSerializer(user, many=False)
                 return Response(serializer.data)
