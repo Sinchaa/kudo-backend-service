@@ -29,7 +29,7 @@ class GiveKudoView(APIView):
         try:
             kudos_to = User.objects.get(id=kudos_to_id)
         except User.DoesNotExist:
-            return Response({'error': 'kudos_to not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'kudos_to not found.'}, status=status.HTTP_404_INTERNAL_SERVER_ERROR)
         if kudos_to == user:
             return Response({'error': 'Cannot give kudo to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
         already_given = Kudo.objects.filter(
