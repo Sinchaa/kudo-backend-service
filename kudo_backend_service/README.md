@@ -20,35 +20,17 @@ This backend service manages user recognition by tracking and controlling weekly
    ```
 
 3. **Create dummy data for testing**  
-   Open the Django shell:
-   ```
-   python manage.py shell
-   ```
-   Then run the following in the shell:
-   ```python
-   from kudos_app.models import Organization, User, Kudo
-   from django.contrib.auth.hashers import make_password
 
-   # Create organizations
-   org1 = Organization.objects.create(name="Alpha Org")
-   org2 = Organization.objects.create(name="Beta Org")
+   ## Populate the database (recommended)
 
-   # Create users
-   user1 = User.objects.create(username="alice", password=make_password("pass"), first_name="Alice", last_name="Anderson", email="alice@example.com", organization=org1)
-   user2 = User.objects.create(username="bob", password=make_password("pass"), first_name="Bob", last_name="Brown", email="bob@example.com", organization=org1)
-   user3 = User.objects.create(username="carol", password=make_password("pass"), first_name="Carol", last_name="Clark", email="carol@example.com", organization=org2)
-   user4 = User.objects.create(username="dave", password=make_password("pass"), first_name="Dave", last_name="Davis", email="dave@example.com", organization=org1)
-   user5 = User.objects.create(username="eve", password=make_password("pass"), first_name="Eve", last_name="Evans", email="eve@example.com", organization=org2)
-   user6 = User.objects.create(username="frank", password=make_password("pass"), first_name="Frank", last_name="Foster", email="frank@example.com", organization=org2)
-   user7 = User.objects.create(username="grace", password=make_password("pass"), first_name="Grace", last_name="Green", email="grace@example.com", organization=org1)
+      After running migrations, use the provided management command to seed sample organizations, users and kudos (idempotent and hashes passwords correctly):
 
-   # Create kudos
-   Kudo.objects.create(kudos_from=user1, kudos_to=user2, message="Great teamwork!")
-   Kudo.objects.create(kudos_from=user2, kudos_to=user1, message="Thanks for your help!")
-   Kudo.objects.create(kudos_from=user3, kudos_to=user1, message="Well done on the project!")
-   ```
-   Exit the shell.
-
+      Windows / Terminal:
+      ```bash
+      python manage.py makemigrations
+      python manage.py migrate
+      python manage.py seed_data
+      ```
 4. **Run the development server**
    ```
    python manage.py runserver
