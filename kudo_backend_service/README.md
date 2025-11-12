@@ -5,6 +5,10 @@ This backend service manages user recognition by tracking and controlling weekly
 
 ## How to Run the Application
 
+## Navigate into the project
+
+   cd kudo_backend_service
+
 1. **Install dependencies**  
    Make sure you have Python 3 and Django installed.  
    Install requirements (if you have a `requirements.txt`):
