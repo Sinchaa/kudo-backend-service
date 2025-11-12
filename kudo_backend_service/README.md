@@ -19,6 +19,14 @@ This backend service manages user recognition by tracking and controlling weekly
    ```
 
 2. **Apply migrations**  
+
+   Give your db details in .env file (change the details accordingly)
+      DB_ENGINE=django.db.backends.postgresql
+      DB_NAME=kudos_db
+      DB_USER=postgres
+      DB_PASSWORD=root
+      DB_HOST=localhost
+      DB_PORT=5432
    Create the necessary database tables:
    ```
    python manage.py makemigrations
@@ -27,23 +35,10 @@ This backend service manages user recognition by tracking and controlling weekly
 
 3. **Create dummy data for testing**  
 
-   ## Populate the database (recommended)
-
-      After running migrations, use the provided management command to seed sample organizations, users and kudos (idempotent and hashes passwords correctly):
-
-      Give your db details in .env file (change the details accordingly)
-      DB_ENGINE=django.db.backends.postgresql
-      DB_NAME=kudos_db
-      DB_USER=postgres
-      DB_PASSWORD=root
-      DB_HOST=localhost
-      DB_PORT=5432
+   ## Populate the database (recommended)      
 
       Windows / Terminal:
       ```bash
-      python manage.py makemigrations
-      python manage.py migrate
-
       python manage.py shell
 
       from kudos_app.models import Organization, User, Kudo
