@@ -51,9 +51,7 @@ class ReceivedKudosListView(APIView):
 
     def get(self, request):
         user = get_current_user(request)
-        print(user)
         received_kudos = Kudo.objects.filter(kudos_to=user).order_by('-created_at')
-        print(received_kudos)
         serializer = KudoSerializer(received_kudos, many=True)
         return Response(serializer.data)
 
@@ -82,7 +80,6 @@ class FetchUsersListView(APIView):
 
     def get(self, request):
         user = get_current_user(request)
-        print(user.organization)
         users_list = User.objects.filter(organization=user.organization).exclude(id=user.id)
         serializer = UserSerializer(users_list, many=True)
         return Response(serializer.data)

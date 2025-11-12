@@ -27,15 +27,20 @@ This backend service manages user recognition by tracking and controlling weekly
    Then run the following in the shell:
    ```python
    from kudos_app.models import Organization, User, Kudo
+   from django.contrib.auth.hashers import make_password
 
    # Create organizations
    org1 = Organization.objects.create(name="Alpha Org")
    org2 = Organization.objects.create(name="Beta Org")
 
    # Create users
-   user1 = User.objects.create(username="alice", password="pass", organization=org1)
-   user2 = User.objects.create(username="bob", password="pass", organization=org1)
-   user3 = User.objects.create(username="carol", password="pass", organization=org2)
+   user1 = User.objects.create(username="alice", password=make_password("pass"), first_name="Alice", last_name="Anderson", email="alice@example.com", organization=org1)
+   user2 = User.objects.create(username="bob", password=make_password("pass"), first_name="Bob", last_name="Brown", email="bob@example.com", organization=org1)
+   user3 = User.objects.create(username="carol", password=make_password("pass"), first_name="Carol", last_name="Clark", email="carol@example.com", organization=org2)
+   user4 = User.objects.create(username="dave", password=make_password("pass"), first_name="Dave", last_name="Davis", email="dave@example.com", organization=org1)
+   user5 = User.objects.create(username="eve", password=make_password("pass"), first_name="Eve", last_name="Evans", email="eve@example.com", organization=org2)
+   user6 = User.objects.create(username="frank", password=make_password("pass"), first_name="Frank", last_name="Foster", email="frank@example.com", organization=org2)
+   user7 = User.objects.create(username="grace", password=make_password("pass"), first_name="Grace", last_name="Green", email="grace@example.com", organization=org1)
 
    # Create kudos
    Kudo.objects.create(kudos_from=user1, kudos_to=user2, message="Great teamwork!")
@@ -76,7 +81,7 @@ All endpoints are prefixed with `/kudos/`.
 
 ---
 
-## Creating Test Data for Login
+## Creating Test Data for Login - This is just for reference(No need to run these steps)
 
 To test the login functionality, you need at least one user in the database.  
 You can use the shell steps above or create a user like this:
