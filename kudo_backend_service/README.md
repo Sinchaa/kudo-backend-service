@@ -35,7 +35,29 @@ This backend service manages user recognition by tracking and controlling weekly
 
 3. **Create dummy data for testing**  
 
-   ## Populate the database (recommended)      
+   ## Method 1.Populate data without Postgres
+      Data is present in seed_data.py so you can run the below command to directly import the data
+      ```
+      python manage.py seed_data
+      ```
+      To check if the data is successfully populated run the below commands
+      ```
+         python manage.py shell
+
+         from kudos_app.models import Organization
+         from auth_app.models import User
+         from kudos_app.models import Kudo
+
+         # Delete all data
+         Kudo.objects.all()
+         User.objects.all()
+         Organization.objects.all()
+
+         # Exit
+         exit()
+      ```
+
+   ## Method 2.Populate the database    
 
       Windows / Terminal:
       ```bash

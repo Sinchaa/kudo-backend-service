@@ -1,51 +1,85 @@
 from django.core.management.base import BaseCommand
-from django.contrib.auth.hashers import make_password
 from kudos_app.models import Organization, Kudo
 from auth_app.models import User
+from django.contrib.auth.hashers import make_password
 
 class Command(BaseCommand):
-    help = "Seed sample organizations, users and kudos (idempotent)."
+    help = 'Populate database with dummy data for testing'
 
-    def handle(self, *args, **options):
-        org1, _ = Organization.objects.get_or_create(name="Alpha Org")
-        org2, _ = Organization.objects.get_or_create(name="Beta Org")
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--clear',
+            action='store_true',
+            help='Clear existing data before seeding',
+        )
 
-        users = [
-            ("alice", "pass", "Alice", "Anderson", "alice@example.com", org1),
-            ("bob", "pass", "Bob", "Brown", "bob@example.com", org1),
-            ("carol", "pass", "Carol", "Clark", "carol@example.com", org2),
-            ("dave", "pass", "Dave", "Davis", "dave@example.com", org1),
-            ("eve", "pass", "Eve", "Evans", "eve@example.com", org2),
-            ("frank", "pass", "Frank", "Foster", "frank@example.com", org2),
-            ("grace", "pass", "Grace", "Green", "grace@example.com", org1),
+    def handle(self, *args, **kwargs):
+        # Clear data if --clear flag is provided
+        if kwargs['clear']:
+            self.stdout.write('Clearing existing data...')
+            Kudo.objects.all().delete()
+            User.objects.all().delete()
+            Organization.objects.all().delete()
+            self.stdout.write(self.style.WARNING('Cleared all existing data'))
+
+        self.stdout.write('Starting to populate database...')
+
+        # Create organizations
+        self.stdout.write('Creating organizations...')
+        org1, created = Organization.objects.get_or_create(name="Alpha Org")
+        if created:
+            self.stdout.write(self.style.SUCCESS(f'Created organization: {org1.name}'))
+        else:
+            self.stdout.write(f'Organization already exists: {org1.name}')
+        
+        org2, created = Organization.objects.get_or_create(name="Beta Org")
+        if created:
+            self.stdout.write(self.style.SUCCESS(f'Created organization: {org2.name}'))
+        else:
+            self.stdout.write(f'Organization already exists: {org2.name}')
+
+        # Create users
+        self.stdout.write('Creating users...')
+        users_data = [
+            ("alice", "Alice", "Anderson", "alice@example.com", org1),
+            ("bob", "Bob", "Brown", "bob@example.com", org1),
+            ("carol", "Carol", "Clark", "carol@example.com", org2),
+            ("dave", "Dave", "Davis", "dave@example.com", org1),
+            ("eve", "Eve", "Evans", "eve@example.com", org2),
+            ("frank", "Frank", "Foster", "frank@example.com", org2),
+            ("grace", "Grace", "Green", "grace@example.com", org1),
         ]
 
-        for username, password, first, last, email, org in users:
+        created_users = []
+        for username, first, last, email, org in users_data:
             user, created = User.objects.get_or_create(
                 username=username,
                 defaults={
-                    "password": make_password(password),
-                    "first_name": first,
-                    "last_name": last,
-                    "email": email,
-                    "organization": org,
-                },
+                    'password': make_password("pass"),
+                    'first_name': first,
+                    'last_name': last,
+                    'email': email,
+                    'organization': org,
+                    'is_active': True
+                }
             )
-            # Ensure password is hashed if user existed with plaintext
-            if not user.password.startswith("pbkdf2_"):
-                user.password = make_password(password)
-                user.save()
+            created_users.append(user)
+            if created:
+                self.stdout.write(self.style.SUCCESS(f'Created user: {username}'))
+            else:
+                self.stdout.write(f'User already exists: {username}')
 
-        # create sample kudos (get_or_create makes this idempotent)
-        def g(u_from, u_to, msg):
-            Kudo.objects.get_or_create(
-                kudos_from=User.objects.get(username=u_from),
-                kudos_to=User.objects.get(username=u_to),
-                message=msg,
+        # Create kudos
+        self.stdout.write('Creating kudos...')
+        if len(created_users) >= 2:
+            kudo, created = Kudo.objects.get_or_create(
+                kudos_from=created_users[0],  # alice
+                kudos_to=created_users[1],    # bob
+                defaults={'message': "Great teamwork!"}
             )
+            if created:
+                self.stdout.write(self.style.SUCCESS('Created sample kudo'))
+            else:
+                self.stdout.write('Sample kudo already exists')
 
-        g("alice", "bob", "Great teamwork!")
-        g("bob", "alice", "Thanks for your help!")
-        g("carol", "alice", "Well done on the project!")
-
-        self.stdout.write(self.style.SUCCESS("Sample data seeded (or already present)."))
+        self.stdout.write(self.style.SUCCESS('Successfully populated database with dummy data!'))
